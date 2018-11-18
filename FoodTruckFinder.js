@@ -17,7 +17,7 @@ const secondColName = 'ADDRESS'
  * to a number between 0-23.
  *
  * @param {String} time - The string representation of time, Example: '9AM' or '10PM'.
- * @returns {Number} The current value of the tag.
+ * @returns {Number} An hour (number) between 0-23 (think military time).
  */
 function getHour(time){
   var retVal = Number(time.substring(0, time.length - 2));

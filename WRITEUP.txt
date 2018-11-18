@@ -1,0 +1,14 @@
+If I were to build this out as a full-scale web application I'd first have some questions.  Is this application only to be used for San Francisco (SF) food trucks, meaning will it only pull food truck data from SF?  Let's assume this is the case.  If it is the case then we probably shouldn't be reading the food truck data every time the program is run, this might overwhelm the SF government website as our number of users increases.  We should probably cache the data or store it and periodically refresh the data or have some worker process that monitors the SF government data to see if it has changed - or setup a process that notifies us when it changes and refresh our cache.
+
+I would use typescript on the front-end to have type safety on all the data I'm passing around.  I would also define a model that represents the JSON I am reading from the SF government website.  Instead of reading user input on the command-line to page the data I would paginate the data (read only 10 records at a time).  Once the user clicks page (2) then I would fetch 10 more records.  This would decrease the load on our backend system and also we wouldn't be unnecessarily reading data we don't actually need.
+
+All the processing could also be done on the backend
+(1) Determining which trucks are open
+(2) Sorting the trucks
+(3) Mapping out only the subset of data we care about (in the command line case we only cared about applicant and location).
+
+For the backend I'd use .NET Core (Since I'm familiar with Microsoft tech stack) which is portable across Linux/Windows.  This would give us hosting flexibility for the backend.  It also gives us the ability to not only be in multiple DC's but also be in multiple cloud compute providers (say AWS/Azure).  This will increase our resiliency to outages.
+
+I would also probably increase the fields on the blob of data given from the backend.  Some fields that would be useful would be the opening time and closing time which the command line doesn't have.
+
+Getting the maximum food truck length to align the columns would also not be necessary in a full-scale web application.  I would just build up the HTML as needed and align the trucks that way maybe using Angular/TS.

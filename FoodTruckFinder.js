@@ -5,6 +5,8 @@ const readline = require('readline')
 // Consts
 const url = 'http://data.sfgov.org/resource/bbb8-hzi6.json';
 const colBuffer = 4;
+const endOfWeekDay = 6;
+const beginningOfWeekDay = 0;
 const firstColName = 'NAME'
 const secondColName = 'ADDRESS'
 
@@ -23,7 +25,7 @@ function getHour(time){
   var retVal = Number(time.substring(0, time.length - 2));
 
   // 12AM will be 0
-  if (time.indexOf('AM') === 0 && retVal === 12){
+  if (time.indexOf('AM') !== -1 && retVal === 12){
     return 0;
   }
 
@@ -52,10 +54,20 @@ function getOpenFoodTrucks(data){
     const end = getHour(truck.endtime)
     const day = Number(truck.dayorder);
 
+    // Case 1: Normal day
     // Current time must be >= opening time
-    // Current time must be <= closing time
+    // Current time must be < closing time
     // Current day must be == day the truck is open
-    return curHour >= start && curHour <= end && day == curDay;
+
+    // Case 2: Rollover day
+    // Current tiem must be < closing time
+    // Current day must be === day -1
+    var isRollOver = truck.starttime.indexOf('PM') !== -1 && 
+                     truck.endtime.indexOf('AM') !== -1;
+    var modCalc = (curDay === beginningOfWeekDay) ? endOfWeekDay : (curDay - 1) % endOfWeekDay;
+    var isOpen = (curHour >= start && curHour < end && day === curDay) ||
+                  (isRollOver && curHour < end && day === modCalc);
+    return isOpen;//(curHour >= start && day == curDay); // &&;
   });
   return res;
 }

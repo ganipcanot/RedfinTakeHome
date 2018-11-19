@@ -21,7 +21,14 @@ const secondColName = 'ADDRESS'
  */
 function getHour(time){
   var retVal = Number(time.substring(0, time.length - 2));
-  if (time.indexOf("PM") !== -1 && retVal !== 12){
+
+  // 12AM will be 0
+  if (time.indexOf('AM') === 0 && retVal === 12){
+    return 0;
+  }
+
+  // 12PM will just be 12
+  if (time.indexOf('PM') !== -1 && retVal !== 12){
     retVal += 12;
   }
   return retVal;
